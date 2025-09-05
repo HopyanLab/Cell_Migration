@@ -764,12 +764,12 @@ class Window(QWidget):
 		
 	def toggle_grid (self):
 		self.hide_grid = self.grid_checkbox.isChecked()
-		camera = (self.canvas.ax.elev,self.canvas.ax.azim)
+		camera = (self.canvas.ax.elev, self.canvas.ax.azim, self.canvas.ax.roll)
 		self.plot(camera)
 
 	def toggle_tracks (self):
 		self.hide_tracks = self.tracks_checkbox.isChecked()
-		camera = (self.canvas.ax.elev,self.canvas.ax.azim)
+		camera = (self.canvas.ax.elev, self.canvas.ax.azim, self.canvas.ax.roll)
 		self.plot(camera)
 
 	def save_image (self):
@@ -846,6 +846,9 @@ class Window(QWidget):
 			self.plot()
 	
 	def plot (self, camera = None):
+		if camera is None:
+			camera = (self.canvas.ax.elev, self.canvas.ax.azim,
+								self.canvas.ax.roll)
 		if self.data is None:
 			return
 		for image in self.canvas.ax.images:
@@ -884,7 +887,8 @@ class Window(QWidget):
 			for artist in self.canvas.ax.lines + self.canvas.ax.collections:
 				artist.remove()
 		if camera is not None:
-			self.canvas.ax.view_init(elev=camera[0], azim=camera[1])
+			self.canvas.ax.view_init(elev=camera[0], azim=camera[1],
+											roll=camera[2])
 		self.canvas.draw()
 	
 	def avg_data (self):
